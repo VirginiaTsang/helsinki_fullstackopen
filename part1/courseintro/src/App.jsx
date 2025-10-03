@@ -1,17 +1,16 @@
 import { useState } from 'react'
 
 //defining all, average and positive as components. they can also be as state hooks
-const All = (props) => (
-  <p>all {props.good+props.neutral+props.bad}</p>
+const Statistics = (props) => {
+  const total = props.good+props.neutral+props.bad
+return(
+  <>
+  <p>all {total}</p>
+  <p>average {(props.good-props.bad)/(total)}</p>
+  <p>positive {(props.good)/(total)*100} %</p>
+  </>
 )
-
-const Average = (props) =>(
-  <p>average {(props.good-props.bad)/(props.good+props.neutral+props.bad)}</p>
-)
-
-const Positive = (props) => (
-  <p>positive {(props.good)/(props.good+props.neutral+props.bad)*100} %</p>
-)
+}
 
 const App = () => {
   // save clicks of each button to its own state
@@ -29,11 +28,7 @@ const App = () => {
       <p>good {good}</p>
       <p>neutral {neutral}</p>
       <p>bad {bad}</p>
-      <All good={good} neutral={neutral} bad={bad}/>
-      <Average good={good} neutral={neutral} bad={bad}/>
-      <Positive good={good} neutral={neutral} bad={bad}/>
-
-      
+      <Statistics good={good} neutral={neutral} bad={bad}/>      
     </div>
   )
 }
