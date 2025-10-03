@@ -6,6 +6,23 @@ const Button = (props) => (
   </button>
 )
 
+const MostVote = (props) => {
+  let max=0
+  let idx=0
+  for (let i = 0; i < props.vote.length; i++) {
+    if (props.vote[i] > max){
+      max=props.vote[i]
+      idx=i
+    }
+  }
+  return(
+    <>
+    <p>{props.anecdotes[idx]}</p>
+    <p>has {max} votes</p>
+    </>
+  )
+}
+
 const App = () => {
   const anecdotes = [
     'If it hurts, do it more often.',
@@ -29,11 +46,14 @@ const App = () => {
 
   return (
     <div>
+      <h2>Anecdote of the day</h2>
       {anecdotes[selected]}
       <br/>
       <p>has {vote[selected]} votes</p>
       <Button handleClick={handleVoteCount} text="vote"/>
       <Button handleClick={() => setSelected(Math.floor(Math.random() * anecdotes.length))} text="next anecdote" />
+      <h2>Anecdote with most votes</h2>
+      <MostVote vote={vote} anecdotes={anecdotes}/>
     </div>
   )
 }
