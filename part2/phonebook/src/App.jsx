@@ -17,8 +17,15 @@ const App = () => {
     const nameObject = {
       name: newName
     }
-    setPersons(persons.concat(nameObject))
-    setNewName('')
+
+    const hasName = persons.find(element => element.name === newName)
+    if(typeof hasName === 'undefined'){
+      setPersons(persons.concat(nameObject))
+      setNewName('')
+    } else{
+      alert(`${newName} is already added to phonebook`);
+    }
+
   }
 
   return (
