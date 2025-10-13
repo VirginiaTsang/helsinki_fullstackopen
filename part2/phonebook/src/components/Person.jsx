@@ -1,3 +1,3 @@
-const Person = ({name, number}) => (<p>{name} {number}</p>)
+const Person = ({name, number, deleteAction}) => (<li>{name} {number} <button onClick={deleteAction}>delete</button></li>)
 
 export default Person

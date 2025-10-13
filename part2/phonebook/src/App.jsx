@@ -2,28 +2,28 @@ import { useState, useEffect } from 'react'
 import DisplayPerson from './components/DisplayPerson'
 import AddPersonForm from './components/AddPersonForm'
 import SearchPerson from './components/SearchPerson'
-import axios from 'axios'
+import personService from './services/personService'
 
 const App = () => {
-  const [persons, setPersons] = useState([])
+  const [allPerson, setAllPerson] = useState([])
   const [personsDisplay, setPersonsDisplay] = useState([])
 
   useEffect(()=>{
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => {
-        setPersons(response.data)
+    personService.getAll()
+      .then(persons => {
+        setAllPerson(persons)
+        setPersonsDisplay(persons)
       })
   },[])
 
   return (
     <div>
       <h2>Phonebook</h2>
-      <SearchPerson persons={persons} setPersonsDisplay={setPersonsDisplay}/>
+      <SearchPerson allPerson={allPerson} setPersonsDisplay={setPersonsDisplay}/>
       <h2>add a new</h2>
-      <AddPersonForm persons={persons} setPersons={setPersons} setPersonsDisplay={setPersonsDisplay}/>
+      <AddPersonForm allPerson={allPerson} setAllPerson={setAllPerson} setPersonsDisplay={setPersonsDisplay}/>
       <h2>Numbers</h2>
-      <DisplayPerson persons={personsDisplay}/>
+      <DisplayPerson allPerson={allPerson} setAllPerson={setAllPerson} personsDisplay={personsDisplay} setPersonsDisplay={setPersonsDisplay}/>
     </div>
   )
 }

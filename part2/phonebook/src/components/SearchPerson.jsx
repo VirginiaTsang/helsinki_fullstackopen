@@ -1,6 +1,6 @@
-const SearchPerson = ({persons, setPersonsDisplay}) => {
+const SearchPerson = ({allPerson, setPersonsDisplay}) => {
     const handleSearch = (event) => { 
-        setPersonsDisplay(persons.filter(person => person.name.startsWith(event.target.value)))
+        setPersonsDisplay(allPerson.filter(allPerson => allPerson.name.startsWith(event.target.value)))
     }
     return(
         <div>filter shown with <input onChange={handleSearch}/></div>
