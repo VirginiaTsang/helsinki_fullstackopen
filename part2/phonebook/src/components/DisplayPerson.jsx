@@ -5,8 +5,8 @@ const DisplayPerson = ({personsDisplay, setPersonsDisplay, allPerson, setAllPers
     const deleteAction = (name,id) => {
         if (window.confirm(`Delete ${name}?`)) {
         PersonService.deletePerson(id).then(res => {
-            setPersonsDisplay(personsDisplay.filter(person => person.id !== res.id))
-            setAllPerson(allPerson.filter(person => person.id !== res.id))
+            setPersonsDisplay(personsDisplay.filter(person => person.id !== id))
+            setAllPerson(allPerson.filter(person => person.id !== id))
 
             }
         ).catch(error=>{

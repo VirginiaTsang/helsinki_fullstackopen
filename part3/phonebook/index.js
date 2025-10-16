@@ -1,7 +1,10 @@
 const express = require('express')
 const morgan = require('morgan')
+const cors = require('cors')
+
 const app = express()
 app.use(express.json())
+app.use(cors())
 
 morgan.token('post_body', function getId (req) {
   return req.body? JSON.stringify(req.body) : ""
@@ -65,9 +68,7 @@ app.get('/info',(req, res) => {
 
 app.post('/api/persons',(req,res)=>{
     const body = req.body
-    console.log(body)
     if(persons.find(person => person.name === body.name)){
-        console.log("hi")
         return res.status(400).json({
             'error':'name must be unique'
         })
@@ -84,19 +85,32 @@ app.post('/api/persons',(req,res)=>{
     }
 
     const person = {
+        id:generateId(),
         name: body.name,
-        number: body.number,
-        id:generateId()
+        number: body.number
     }
     persons=persons.concat(person)
-    console.log(persons)
     res.json(person)
 })
 
-app.delete('/api/persons/:id', (res,req) => {
+app.delete('/api/persons/:id',(req,res) => {
     persons=persons.filter(person=>person.id!==req.params.id)
     res.status(204).end()
 })
+
+app.put('/api/persons/:id',(req,res) => {
+    const req_id = req.params.id
+    const body = req.body
+    const newPerson = {
+        id: req_id,
+        name: body.name,
+        number: body.number
+    }
+    const i = persons.findIndex(p => p.id === req_id)
+    persons[i] = newPerson
+        console.log(persons)
+        res.json(newPerson)
+    })
 
 const PORT = 3001
 app.listen(PORT, () => {
