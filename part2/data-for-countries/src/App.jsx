@@ -6,6 +6,7 @@ import CountryServices from './services/CountryService'
 const App = (props) => {
   const [searchWord, setSearchWord] = useState('')
   const [allCountries, setAllCountries] = useState([])
+  const [userShow, setUserShow] = useState({show:false, country:null})
 
   useEffect(()=>{
     CountryServices.getAll().then(response=>{
@@ -15,8 +16,8 @@ const App = (props) => {
   
   return (
     <> 
-      <SearchInput searchWord={searchWord} setSearchWord={setSearchWord}/>
-      <DisplaySearch searchWord={searchWord} allCountries={allCountries}/>
+      <SearchInput searchWord={searchWord} setSearchWord={setSearchWord} userShow={userShow} setUserShow={setUserShow}/>
+      <DisplaySearch searchWord={searchWord} allCountries={allCountries} setUserShow={setUserShow}/>
     </>
   )
 }

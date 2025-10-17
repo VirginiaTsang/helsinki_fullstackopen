@@ -1,6 +1,6 @@
-const DisplayCountryName = ({name}) => {
+const DisplayCountryName = ({name, userShow, setUserShow}) => {
     return(
-        <p>{name}</p>
+        <li>{name}<button onClick={()=>setUserShow({show:true, country:name})}>show</button></li>
     )
 }
 export default DisplayCountryName

@@ -1,6 +1,7 @@
-const SearchInput = ({searchWord, setSearchWord}) => {
+const SearchInput = ({searchWord, setSearchWord, setUserShow}) => {
     const handleSearchWordChange = (event) => {
         setSearchWord(event.target.value)
+        setUserShow({show:false, country:null})
     }
 
     const formContainer = {
