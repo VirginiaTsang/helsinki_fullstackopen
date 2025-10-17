@@ -1,4 +1,3 @@
-import { useState } from "react";
 import DisplayCountryInfo from "./DisplayCountryInfo";
 import DisplayCountryName from "./DisplayCountryName"
 

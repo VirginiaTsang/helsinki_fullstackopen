@@ -17,7 +17,7 @@ const App = (props) => {
   return (
     <> 
       <SearchInput searchWord={searchWord} setSearchWord={setSearchWord} userShow={userShow} setUserShow={setUserShow}/>
-      <DisplaySearch searchWord={searchWord} allCountries={allCountries} setUserShow={setUserShow}/>
+      <DisplaySearch searchWord={searchWord} allCountries={allCountries} userShow={userShow} setUserShow={setUserShow}/>
     </>
   )
 }
