@@ -25,13 +25,18 @@ app.use(morgan(function (tokens, req, res) {
   ].join(' ')
 }))
 
-app.get('/api/persons',(req, res) => {
-    Person.find({}).then(result => {
-        res.json(result)
-    })
+app.get('/api/persons',(req, res, next) => {
+    Person.find({}).then(person => {
+        if(person){
+            res.json(person)
+        }else{
+            response.status(404).end()
+        }
+        })
+    .catch(error => next(error))
 })
 
-app.get('/api/persons/:id',(req,res) => {
+app.get('/api/persons/:id',(req,res, next) => {
     Person.findById(req.params.id)
     .then(person => {
         if(person){
@@ -40,19 +45,18 @@ app.get('/api/persons/:id',(req,res) => {
             response.status(404).end()
         }
         })
-    .catch(err => {
-        res.status(500).json({'error':err})
-    })
+    .catch(error => next(error))
 })
 
-app.get('/info',(req, res) => {
+app.get('/info',(req, res, next) => {
     let date_time=new Date()
     Person.find({}).then(result => {
     res.send(`Phonebook has info for ${result.length} people <br/> ${date_time}`)
     })
+    .catch(error => next(error))
 })
 
-app.post('/api/persons',(req,res)=>{
+app.post('/api/persons',(req,res, next)=>{
     const body = req.body
     if (body.name === ""){
         return res.status(400).json({
@@ -72,16 +76,18 @@ app.post('/api/persons',(req,res)=>{
     person.save().then(savedPerson => {
     res.json(savedPerson)
   })
+    .catch(error => next(error))
 })
 
-app.delete('/api/persons/:id',(req,res) => {
+app.delete('/api/persons/:id',(req, res, next) => {
     Person.findByIdAndDelete(req.params.id).then(person=>{
-        console.log(person)
+        console.log(person) 
         res.status(204).end()
     })
+    .catch(error => next(error))
 })
 
-app.put('/api/persons/:id',(req,res) => {
+app.put('/api/persons/:id',(req, res, next) => {
     const req_id = req.params.id
     const body = req.body
     Person.updateOne({_id:req_id}, {number: body.number}).then(updatedPerson =>{
@@ -91,12 +97,30 @@ app.put('/api/persons/:id',(req,res) => {
             response.status(404).end()
         }
         })
-    .catch(err => {
-        res.status(500).json({'error':err})
-    })
+    .catch(error => next(error))
 })
 
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
+
+const unknownEndpoint = (request, response) => {
+  response.status(404).send({ error: 'unknown endpoint' })
+}
+
+// handler of requests with unknown endpoint
+app.use(unknownEndpoint)
+
+const errorHandler = (error, request, response, next) => {
+  console.error(error.message)
+
+  if (error.name === 'CastError') {
+    return response.status(400).send({ error: 'malformatted id' })
+  } 
+
+  next(error)
+}
+
+// this has to be the last loaded middleware, also all the routes should be registered before this!
+app.use(errorHandler)
