@@ -1,6 +1,8 @@
+require('dotenv').config()
 const express = require('express')
-const morgan = require('morgan')
+const morgan = require('morgan') //logger
 const cors = require('cors')
+const Person = require('./models/person')
 
 const app = express()
 app.use(express.json())
@@ -23,96 +25,61 @@ app.use(morgan(function (tokens, req, res) {
   ].join(' ')
 }))
 
-let persons = [
-    { 
-      "id": "1",
-      "name": "Arto Hellas", 
-      "number": "040-123456"
-    },
-    { 
-      "id": "2",
-      "name": "Ada Lovelace", 
-      "number": "39-44-5323523"
-    },
-    { 
-      "id": "3",
-      "name": "Dan Abramov", 
-      "number": "12-43-234345"
-    },
-    { 
-      "id": "4",
-      "name": "Mary Poppendieck", 
-      "number": "39-23-6423122"
-    }
-]
-
-const generateId =() => {
-    const maxId = persons.length > 0 ? Math.max(...persons.map(person => Number(person.id))) : 0
-    return String(maxId+1)
-}
 app.get('/api/persons',(req, res) => {
-    res.json(persons)
+    Person.find({}).then(result => {
+        res.json(result)
+    })
 })
 
 app.get('/api/persons/:id',(req,res) => {
-    const person = persons.find(person=>person.id===req.params.id)
-    if(person){
-        res.json(person)
-    }else{
-        res.status(404).end()
-    }
+    Person.findById(req.params.id)
+    .then(person => {
+            res.json(person)})
+    .catch(err => {
+        res.status(400).json({'error':err})
+    })
 })
 
 app.get('/info',(req, res) => {
     let date_time=new Date()
-    res.send(`Phonebook has info for ${persons.length} people <br/> ${date_time}`)
+    Person.find({}).then(result => {
+    res.send(`Phonebook has info for ${result.length} people <br/> ${date_time}`)
+    })
 })
 
 app.post('/api/persons',(req,res)=>{
     const body = req.body
-    if(persons.find(person => person.name === body.name)){
-        return res.status(400).json({
-            'error':'name must be unique'
-        })
-        
-    } else if (body.name == ""){
+    if (body.name === ""){
         return res.status(400).json({
             'error':'name cannot be empty'
         })}
-    else if (body.number == ""){
+    else if (body.number === ""){
         return res.status(400).json({
             'error':'number cannot be empty'
         })
-    
     }
-
-    const person = {
-        id:generateId(),
+    
+    const person = new Person({
         name: body.name,
         number: body.number
-    }
-    persons=persons.concat(person)
-    res.json(person)
+    })
+    
+    person.save().then(savedPerson => {
+    res.json(savedPerson)
+  })
 })
 
 app.delete('/api/persons/:id',(req,res) => {
-    persons=persons.filter(person=>person.id!==req.params.id)
-    res.status(204).end()
+    Person.deleteOne({ name: req.params.id }).then(()=>{
+        res.status(204).end()
+    })
 })
 
 app.put('/api/persons/:id',(req,res) => {
     const req_id = req.params.id
     const body = req.body
-    const newPerson = {
-        id: req_id,
-        name: body.name,
-        number: body.number
-    }
-    const i = persons.findIndex(p => p.id === req_id)
-    persons[i] = newPerson
-        console.log(persons)
-        res.json(newPerson)
-    })
+    Person.updateOne({_id:req_id}, {number: body.number}).then(updatedPerson =>res.json(updatedPerson))
+})
 
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
