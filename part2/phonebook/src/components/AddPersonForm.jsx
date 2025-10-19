@@ -45,12 +45,12 @@ const AddPersonForm = ({allPerson, setPersonsDisplay, setAllPerson, setMessage})
         if (window.confirm(`${newName} is already added to the phonebook, replace old number with a new one?`)) {
           //name is not key
           personService.updatePerson(nameObject, hasName.id).then(res=>{
+            console.log(res)
             setPersonsDisplay(allPerson.map(person=> person.id === hasName.id ? res : person))
             setAllPerson(allPerson.map(person=> person.id === hasName.id ? res : person))
             setNewName('')
             setNewNumber('')
           }).catch(error=>{
-            console.log('fail')
             setMessage({
                 'text': `Information of ${newName} has been removed from server`,
                 'color':'r'

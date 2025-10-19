@@ -34,9 +34,14 @@ app.get('/api/persons',(req, res) => {
 app.get('/api/persons/:id',(req,res) => {
     Person.findById(req.params.id)
     .then(person => {
-            res.json(person)})
+        if(person){
+            res.json(person)
+        }else{
+            response.status(404).end()
+        }
+        })
     .catch(err => {
-        res.status(400).json({'error':err})
+        res.status(500).json({'error':err})
     })
 })
 
@@ -70,7 +75,8 @@ app.post('/api/persons',(req,res)=>{
 })
 
 app.delete('/api/persons/:id',(req,res) => {
-    Person.deleteOne({ name: req.params.id }).then(()=>{
+    Person.findByIdAndDelete(req.params.id).then(person=>{
+        console.log(person)
         res.status(204).end()
     })
 })
@@ -78,7 +84,16 @@ app.delete('/api/persons/:id',(req,res) => {
 app.put('/api/persons/:id',(req,res) => {
     const req_id = req.params.id
     const body = req.body
-    Person.updateOne({_id:req_id}, {number: body.number}).then(updatedPerson =>res.json(updatedPerson))
+    Person.updateOne({_id:req_id}, {number: body.number}).then(updatedPerson =>{
+        if(updatedPerson.modifiedCount === 1){
+            res.json({...req.body, id: req.params.id})
+        }else{
+            response.status(404).end()
+        }
+        })
+    .catch(err => {
+        res.status(500).json({'error':err})
+    })
 })
 
 const PORT = process.env.PORT || 3001

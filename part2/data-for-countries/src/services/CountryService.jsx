@@ -13,7 +13,6 @@ const getCountry = (country) => {
 }
 
 const getWeather = (lat,lon) => {
-  console.log('fetch')
   return axios.get(`${weatherUrl}/?lat=${lat}&lon=${lon}&appid=${api_key}`).then(response => response.data)
 }
 export default {getAll, getCountry, getWeather}

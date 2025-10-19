@@ -3,7 +3,6 @@ import DisplayCountryName from "./DisplayCountryName"
 
 const DisplaySearch = ({searchWord, allCountries, userShow, setUserShow}) => {
     const matches = allCountries.filter(item => item.includes(searchWord));
-    console.log('displaysearch')
     if(matches.length == 1 || userShow.show === true){
         const displayCountry = userShow.show? userShow.country : matches[0]
         return(

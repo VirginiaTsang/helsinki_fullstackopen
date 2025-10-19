@@ -7,10 +7,8 @@ const DisplayPerson = ({personsDisplay, setPersonsDisplay, allPerson, setAllPers
         PersonService.deletePerson(id).then(res => {
             setPersonsDisplay(personsDisplay.filter(person => person.id !== id))
             setAllPerson(allPerson.filter(person => person.id !== id))
-
             }
         ).catch(error=>{
-            console.log('fail')
             setMessage({
                 'text': `Information of ${name} has been removed from server`,
                 'color':'r'
