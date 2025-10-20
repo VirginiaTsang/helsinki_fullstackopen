@@ -90,7 +90,7 @@ app.delete('/api/persons/:id',(req, res, next) => {
 app.put('/api/persons/:id',(req, res, next) => {
     const req_id = req.params.id
     const body = req.body
-    Person.updateOne({_id:req_id}, {number: body.number}).then(updatedPerson =>{
+    Person.updateOne({_id:req_id}, {number: body.number}, {runValidators: true}).then(updatedPerson =>{
         if(updatedPerson.modifiedCount === 1){
             res.json({...req.body, id: req.params.id})
         }else{
@@ -117,7 +117,9 @@ const errorHandler = (error, request, response, next) => {
 
   if (error.name === 'CastError') {
     return response.status(400).send({ error: 'malformatted id' })
-  } 
+  } else if(error.name === 'ValidationError'){
+    return response.status(400).json({error:error.message})
+  }
 
   next(error)
 }

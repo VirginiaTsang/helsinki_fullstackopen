@@ -39,7 +39,14 @@ const AddPersonForm = ({allPerson, setPersonsDisplay, setAllPerson, setMessage})
           setTimeout(() => {
             setMessage(null)
           }, 5000)
-        })
+        }).catch(error=>{
+            setMessage({
+                'text': `${error.response.data.error}`,
+                'color':'r'
+            })
+            setTimeout(() => {
+            setMessage(null)
+          }, 5000)})
         
       } else{
         if (window.confirm(`${newName} is already added to the phonebook, replace old number with a new one?`)) {
