@@ -101,7 +101,18 @@ test('status code 400 for missing title or url', async () => {
     .post(`/api/blogs`)
     .send(noUrlBlog)
     .expect(400)
+})
 
+test('delete a blog', async () => {
+  const blogsAtStart = await helper.blogsInDb()
+  const toDelete = blogsAtStart[0]
+
+  await api
+    .delete(`/api/blogs/${toDelete.id}`)
+    .expect(204)
+  
+  const blogsAtEnd = await helper.blogsInDb()
+  assert.strictEqual(blogsAtStart.length-1, blogsAtEnd.length)
 })
 
 after(async () => {
