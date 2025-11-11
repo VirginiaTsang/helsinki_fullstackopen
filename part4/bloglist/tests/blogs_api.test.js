@@ -59,6 +59,24 @@ test('add a Blog', async () => {
   assert(titles.includes('temptitle'))
 })
 
+test('default likes to 0 if no likes property', async () => {
+  const blogsAtStart = await helper.blogsInDb()
+
+  const tempBlog = {
+    title: "temptitle",
+    author: "tempauthor",
+    url: "someurl"
+  }
+
+  const result = await api
+    .post(`/api/blogs`)
+    .send(tempBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  assert.strictEqual(result.body.likes, 0)
+})
+
 after(async () => {
   await mongoose.connection.close()
 })
