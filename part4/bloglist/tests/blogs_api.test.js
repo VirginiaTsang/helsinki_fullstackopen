@@ -36,6 +36,29 @@ test('view a specific Blog', async () => {
   assert.deepStrictEqual(resultBlogFromApp.body, blogToView)
 })
 
+test('add a Blog', async () => {
+  const blogsAtStart = await helper.blogsInDb()
+
+  const tempBlog = {
+    title: "temptitle",
+    author: "tempauthor",
+    url: "someurl",
+    likes: 9
+  }
+
+  await api
+    .post(`/api/blogs`)
+    .send(tempBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  const response = await api.get('/api/blogs')
+  const titles = response.body.map(r => r.title)
+
+  assert.strictEqual(blogsAtStart.length+1, response.body.length)
+  assert(titles.includes('temptitle'))
+})
+
 after(async () => {
   await mongoose.connection.close()
 })
