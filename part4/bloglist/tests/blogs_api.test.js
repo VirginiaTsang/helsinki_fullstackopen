@@ -101,6 +101,9 @@ test('status code 400 for missing title or url', async () => {
     .post(`/api/blogs`)
     .send(noUrlBlog)
     .expect(400)
+  
+  const blogsAtEnd = await helper.blogsInDb()
+  assert.strictEqual(blogsAtStart.length, blogsAtEnd.length)
 })
 
 test('delete a blog', async () => {
@@ -115,6 +118,20 @@ test('delete a blog', async () => {
   assert.strictEqual(blogsAtStart.length-1, blogsAtEnd.length)
 })
 
+test('update a blog', async () => {
+  const blogsAtStart = await helper.blogsInDb()
+  const toUpdate = blogsAtStart[0]
+
+  toUpdate.likes = 500
+
+  const updatedBlogInDb = await api
+    .put(`/api/blogs/${toUpdate.id}`)
+    .send(toUpdate)
+    .expect(200)
+
+  assert.strictEqual(updatedBlogInDb.body.likes, 500)
+
+})
 after(async () => {
   await mongoose.connection.close()
 })
