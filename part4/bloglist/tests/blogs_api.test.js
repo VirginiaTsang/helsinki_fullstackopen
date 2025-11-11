@@ -77,6 +77,33 @@ test('default likes to 0 if no likes property', async () => {
   assert.strictEqual(result.body.likes, 0)
 })
 
+test('status code 400 for missing title or url', async () => {
+  const blogsAtStart = await helper.blogsInDb()
+
+  const noTitleBlog = {
+    author: "noTitleAuthor",
+    url: "noTitleUrl",
+    likes: 9
+  }
+
+  const noUrlBlog = {
+    title: "noUrlTitle",
+    author: "noUrlAuthor",
+    likes: 9
+  }
+
+  await api
+    .post(`/api/blogs`)
+    .send(noTitleBlog)
+    .expect(400)
+  
+  await api
+    .post(`/api/blogs`)
+    .send(noUrlBlog)
+    .expect(400)
+
+})
+
 after(async () => {
   await mongoose.connection.close()
 })
